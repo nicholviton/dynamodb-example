@@ -4,6 +4,7 @@ import './App.css';
 require('aws-sdk/dist/aws-sdk');
 var AWS = window.AWS;
 
+
 // Retrieve
 
 
@@ -18,13 +19,13 @@ class App extends Component {
   }
 
   getDynamoDB() {
-    console.log('initDynamoDB function');
+    var config = require('../.env/customconfig.json');
     if (this.state.dynamodb == null) {
       AWS.config.update({
-        region: "us-west-2",
-        endpoint: "http://localhost:8000",
-        accessKeyId: "AKIAILR64FOZ66RAOTXA",
-        secretAccessKey: "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",
+        region: config.dynamodb.region,
+        endpoint: config.dynamodb.endpoint,
+        accessKeyId: config.dynamodb.accessKeyId,
+        secretAccessKey: config.dynamodb.secretAccessKey,
       });
       console.log('after config update');
       
@@ -40,8 +41,10 @@ class App extends Component {
   }
 
   listTables() {
-    //this.getDynamoDB();
-    // something else
+    var dynamodb = this.getDynamoDB();
+    if (dynamodb != null) {
+      console.log('succeeded');
+    }
   }
 
   createNewTable() {
@@ -87,14 +90,6 @@ class App extends Component {
     }
   }
 
-  callAWSDynamoDB() {
-    /*dynamodb.batchGetItem(params, function (err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else     console.log(data);           // successful response
-    });*/
-    //this.createNewTable("Movie3");
-
-  } 
 /*
   connectToMongo() {
     var mongoDB = require('mongodb');
@@ -107,7 +102,7 @@ class App extends Component {
   }*/
 
   render() {
-    this.callAWSDynamoDB();
+    //this.callAWSDynamoDB();
     return (
       <div className="App">
         <div className="App-header">
@@ -117,8 +112,13 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
+        <p>
         <input id="DBNameText" name="DBNameText" className="DB Name" type="text"/> 
         <button onClick={() => this.createNewTable()}> Create Table </button>
+        </p>
+        <p>
+        <button onClick={() => this.listTables()}> List Table </button>
+        </p>
       </div>
     );
   }
